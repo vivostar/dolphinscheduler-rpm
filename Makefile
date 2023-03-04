@@ -19,12 +19,8 @@ mkdir: clean
 	mkdir -p rpmbuild/SRPMS
 
 download: mkdir
-	# curl -L -o rpmbuild/SOURCES/$(full_name).tar.gz $(download_url); 
-	@if [ -f "${full_name}.tar.gz" ]; then \
-		cp ./$(full_name).tar.gz rpmbuild/SOURCES; \
-	else \
-		curl -L -o rpmbuild/SOURCES/$(full_name).tar.gz $(download_url); \
-	fi
+	[ ! -f "${full_name}.tar.gz" ] && curl -L -o ./$(full_name).tar.gz $(download_url)
+	cp ./$(full_name).tar.gz rpmbuild/SOURCES; 
 
 rpm: download
 	rpmbuild $(RPM_OPTS) \
