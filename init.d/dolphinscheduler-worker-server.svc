@@ -14,7 +14,7 @@
 # limitations under the License.
 
 NAME="dolphinscheduler"
-SERVICE_NAME="alert-server"
+SERVICE_NAME="worker-server"
 DAEMON="$NAME-$SERVICE_NAME"
 DESC="$NAME $SERVICE_NAME"
 EXEC_PATH="/usr/lib/$NAME/$SERVICE_NAME/bin/start.sh"

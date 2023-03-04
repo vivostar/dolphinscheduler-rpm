@@ -2,6 +2,8 @@
 # define _unpackaged_files_terminate_build 0
 # disable repacking jars
 %define __os_install_post %{nil}
+%define services alert-server api-server master-server worker-server standalone-server
+%global initd_dir %{_sysconfdir}/rc.d/init.d
 
 Name:       dolphinscheduler
 Version:    %{VERSION}
@@ -38,10 +40,18 @@ Requires:       %{name} = %{version}-%{release}
 %description    api-server
 dolphinscheduler api server
 
+%package        bin
+Summary:        dolphinscheduler original bin
+Group:          Applications/Internet
+Requires:       %{name} = %{version}-%{release}
+
+%description    bin
+dolphinscheduler original bin
+
 %package        master-server
 Summary:        dolphinscheduler master server
 Group:          Applications/Internet
-Requires:       %{name} = %{version}-%{release}, %{name}-ui = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}, %{name}-ui = %{version}-%{release}, %{name}-api-server = %{version}-%{release}
 
 %description    master-server
 dolphinscheduler master server
@@ -57,7 +67,7 @@ dolphinscheduler standalone server
 %package        tools
 Summary:        dolphinscheduler tools
 Group:          Applications/Internet
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}, %{name}-bin = %{version}-%{release}
 
 %description    tools
 dolphinscheduler tools
@@ -86,14 +96,15 @@ dolphinscheduler worker server
 %install
 %{__rm} -rf %{buildroot}
 
-%{__install} -d %{buildroot}
-%{__install} -d %{buildroot}/usr/lib/%{name}
-%{__install} -d %{buildroot}/var/lib/%{name}
-%{__install} -d %{buildroot}/var/log/%{name}
-%{__install} -d %{buildroot}/var/run/%{name}
+%{__install} -d -m 0755 %{buildroot}
+%{__install} -d -m 0755 %{buildroot}/usr/lib/%{name}
+%{__install} -d -m 0755 %{buildroot}/var/lib/%{name}
+%{__install} -d -m 0755 %{buildroot}/var/log/%{name}
+%{__install} -d -m 0755 %{buildroot}/var/run/%{name}
 
 %{__cp} -rp alert-server %{buildroot}/usr/lib/%{name}
 %{__cp} -rp api-server %{buildroot}/usr/lib/%{name}
+%{__cp} -rp bin %{buildroot}/usr/lib/%{name}
 %{__cp} -rp master-server %{buildroot}/usr/lib/%{name}
 %{__cp} -rp standalone-server %{buildroot}/usr/lib/%{name}
 %{__cp} -rp tools %{buildroot}/usr/lib/%{name}
@@ -114,6 +125,14 @@ ln -s -r %{buildroot}/usr/lib/%{name}/master-server/conf     %{buildroot}/etc/%{
 ln -s -r %{buildroot}/usr/lib/%{name}/standalone-server/conf %{buildroot}/etc/%{name}/standalone-server   
 ln -s -r %{buildroot}/usr/lib/%{name}/worker-server/conf     %{buildroot}/etc/%{name}/worker-server    
 ln -s -r %{buildroot}/usr/lib/%{name}/tools/conf             %{buildroot}/etc/%{name}/tools
+
+# Generate the init.d scripts
+%{__install} -d -m 0755 %{buildroot}/%{initd_dir}
+
+for service in %{services}
+do
+  bash %{_sourcedir}/init.d.tmpl %{_sourcedir}/%{name}-${service}.svc rpm %{buildroot}/%{initd_dir}/%{name}-${service}
+done
       
 
 %pre
@@ -147,21 +166,29 @@ fi
 %defattr(-,root,root,-)
 /usr/lib/dolphinscheduler/alert-server
 /etc/dolphinscheduler/alert-server/conf
+%{initd_dir}/%{name}-alert-server
 
 %files api-server
 %defattr(-,root,root,-)
 /usr/lib/dolphinscheduler/api-server
 /etc/dolphinscheduler/api-server/conf
+%{initd_dir}/%{name}-api-server
+
+%files bin
+%defattr(-,root,root,-)
+/usr/lib/dolphinscheduler/bin
 
 %files master-server
 %defattr(-,root,root,-)
 /usr/lib/dolphinscheduler/master-server
 /etc/dolphinscheduler/master-server/conf
+%{initd_dir}/%{name}-master-server
 
 %files standalone-server
 %defattr(-,root,root,-)
 /usr/lib/dolphinscheduler/standalone-server
 /etc/dolphinscheduler/standalone-server/conf
+%{initd_dir}/%{name}-standalone-server
 
 %files tools
 %defattr(-,root,root,-)
@@ -176,6 +203,7 @@ fi
 %defattr(-,root,root,-)
 /usr/lib/dolphinscheduler/worker-server
 /etc/dolphinscheduler/worker-server/conf
+%{initd_dir}/%{name}-worker-server
 
 %changelog
 * Sat Dec 3 2023 Shuaipeng Lee <lishuaipeng651@gmail.com> 1.0.1-1

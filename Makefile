@@ -21,6 +21,7 @@ mkdir: clean
 download: mkdir
 	[ ! -f "${full_name}.tar.gz" ] && curl -L -o ./$(full_name).tar.gz $(download_url); \
 	cp ./$(full_name).tar.gz rpmbuild/SOURCES; 
+	cp init.d/* rpmbuild/SOURCES; 
 
 rpm: download
 	rpmbuild $(RPM_OPTS) \
