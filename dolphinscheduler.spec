@@ -163,46 +163,51 @@ fi
 /var/run/dolphinscheduler
 
 %files alert-server
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/alert-server
 /etc/dolphinscheduler/alert-server/conf
+%defattr(-,root,root,-)
 %{initd_dir}/%{name}-alert-server
 
 %files api-server
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/api-server
 /etc/dolphinscheduler/api-server/conf
+%defattr(-,root,root,-)
 %{initd_dir}/%{name}-api-server
 
 %files bin
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/bin
 
 %files master-server
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/master-server
 /etc/dolphinscheduler/master-server/conf
+%defattr(-,root,root,-)
 %{initd_dir}/%{name}-master-server
 
 %files standalone-server
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/standalone-server
 /etc/dolphinscheduler/standalone-server/conf
+%defattr(-,root,root,-)
 %{initd_dir}/%{name}-standalone-server
 
 %files tools
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/tools
 /etc/dolphinscheduler/tools/conf
 
 %files ui
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/ui
 
 %files worker-server
-%defattr(-,root,root,-)
+%defattr(-,dolphinscheduler,dolphinscheduler,-)
 /usr/lib/dolphinscheduler/worker-server
 /etc/dolphinscheduler/worker-server/conf
+%defattr(-,root,root,-)
 %{initd_dir}/%{name}-worker-server
 
 %changelog

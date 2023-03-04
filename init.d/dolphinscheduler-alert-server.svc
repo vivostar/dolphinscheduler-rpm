@@ -16,13 +16,14 @@
 NAME="dolphinscheduler"
 SERVICE_NAME="alert-server"
 DAEMON="$NAME-$SERVICE_NAME"
-DESC="$NAME $SERVICE_NAME"
-EXEC_PATH="/usr/lib/$NAME/$SERVICE_NAME/bin/start.sh"
+DESC="$SERVICE_NAME"
+EXEC_PATH="/usr/lib/$NAME/$SERVICE_NAME/"
 WORKING_DIR="/var/lib/$NAME"
 LOGFILE="/var/log/$NAME/$DAEMON.log"
 DAEMON_FLAGS=alert-server
 CONF_DIR="/etc/$NAME/$SERVICE_NAME/conf"
 SVC_USER="$NAME"
+KEYWORD="org.apache.dolphinscheduler.alert.AlertServer"
 PIDFILE="/var/run/$NAME/$NAME-$SVC_USER-$SERVICE_NAME.pid"
 
 generate_start() {
@@ -33,8 +34,16 @@ start() {
   [ -f $EXEC_PATH ] || exit $ERROR_PROGRAM_NOT_INSTALLED
   [ -d $CONF_DIR ] || exit $ERROR_PROGRAM_NOT_CONFIGURED
 
-  runuser -s /bin/bash $SVC_USER -c "nohup nice -n 0 \
-        bash -x $EXEC_PATH > $LOGFILE 2>&1 < /dev/null & "'echo $! '"> $PIDFILE"
+  # Start Service
+  runuser -s /bin/bash $SVC_USER -c \
+  "cd $EXEC_PATH && nohup nice -n 0 bash -x bin/start.sh > $LOGFILE 2>&1 < /dev/null &"
+
+  WAIT_TIMES=0
+  until ps -A -o pid,command | grep -i "[j]ava" | grep $KEYWORD || [ $WAIT_TIMES -eq 10 ]; do
+      (( WAIT_TIMES++ ))
+      sleep 1
+  done
+  echo `ps -A -o pid,command | grep -i "[j]ava" | grep $KEYWORD | awk '{print $1}'` > $PIDFILE
 
   # Some processes are slow to start
   sleep $SLEEP_TIME
@@ -63,11 +72,11 @@ stop() {
     TARGET_PID=`cat $PIDFILE`
     if kill -0 $TARGET_PID > /dev/null 2>&1; then
       echo stopping $SERVICE_NAME
-      pkill -P $TARGET_PID
+      kill $TARGET_PID
       sleep $SLEEP_TIME
       if kill -0 $TARGET_PID > /dev/null 2>&1; then
         echo "$SERVICE_NAME did not stop gracefully after $SLEEP_TIME seconds: killing with kill -9"
-        pkill -P -9 $TARGET_PID
+        kill -9 $TARGET_PID
       fi
     else
       echo no $SERVICE_NAME to stop
