@@ -139,7 +139,7 @@ done
 if ! /usr/bin/id dolphinscheduler &>/dev/null; then
     /usr/sbin/useradd -r -d /var/lib/dolphinscheduler -s /bin/sh -c "dolphinscheduler" dolphinscheduler || \
         %logmsg "Unexpected error adding user \"dolphinscheduler\". Aborting installation."
-    /sbin/usermod -a -G hadoop dolphinscheduler
+    # /sbin/usermod -a -G hadoop dolphinscheduler
 fi
 
 %post
