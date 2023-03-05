@@ -56,7 +56,7 @@ here is example:
 #######################################
 . /usr/lib/bigtop-utils/bigtop-detect-javahome
 DATABASE=mysql
-REGISTRY_ZOOKEEPER_CONNECT_STRING="172.18.0.2:2181"
+REGISTRY_ZOOKEEPER_CONNECT_STRING="localhost:2181"
 
 # JAVA_HOME, will use it to start DolphinScheduler server
 export JAVA_HOME=${JAVA_HOME:-/opt/java/openjdk}
