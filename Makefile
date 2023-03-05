@@ -1,4 +1,4 @@
-# Impala
+# Dolphinscheduler
 SHELL := /bin/bash 
 version = 3.1.4
 name = apache-dolphinscheduler
