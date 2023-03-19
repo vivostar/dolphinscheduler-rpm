@@ -21,7 +21,6 @@ Requires: bigtop-utils >= 0.7
 AutoReqProv: no
 
 %description
-About
 Apache DolphinScheduler is the modern data workflow orchestration platform with powerful user interface, dedicated to solving complex task dependencies in the data pipeline and providing various types of jobs available `out of the box`
 
 %package        alert-server
@@ -209,7 +208,3 @@ fi
 /etc/dolphinscheduler/worker-server/conf
 %defattr(-,root,root,-)
 %{initd_dir}/%{name}-worker-server
-
-%changelog
-* Sat Dec 3 2023 Shuaipeng Lee <lishuaipeng651@gmail.com> 1.0.1-1
-- Initial specfile writeup.
